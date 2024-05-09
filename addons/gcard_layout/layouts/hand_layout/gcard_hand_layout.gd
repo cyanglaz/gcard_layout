@@ -17,8 +17,6 @@ signal card_unhovered(card:Control, index:int)
 @export var handle_mouse_hover_animaiton := true
 @export var hovered_index := -1: set = _set_hovered_index
 @export var hover_padding := 40.0: set = _set_hover_padding
-@export var hovered_scale := Vector2(1.1, 1.1)
-@export var dragging_scale := Vector2(1.1, 1.1)
 @export var unhover_delay := 0.1
 
 @export_group("animation")
@@ -70,28 +68,14 @@ func _reset_positions(reculculate_curve:bool = false, animated:bool = true):
 		var layout_info:GCardLayoutInfo = layout_infos[i]
 		if animation_time <= 0.0 || !animated:
 			card.position = layout_info.position
-			card.rotation = layout_info.rotation
-			if i == hovered_index:
-				card.scale = hovered_scale
-			elif i == _dragging_index:
-				card.scale = dragging_scale
-			else:
-				card.scale = Vector2.ONE
+			card.idle_rotation = layout_info.rotation
 		else:
 			var tween := create_tween()
-			tween.parallel().tween_property(card, "rotation", layout_info.rotation, animation_time).set_ease(animation_ease).set_trans(animation_trans)
 			if i == hovered_index:
 				tween.parallel().tween_property(card, "position", layout_info.position, animation_time).set_ease(animation_ease).set_trans(animation_trans)
-				tween.parallel().tween_property(card, "scale", hovered_scale, animation_time).set_ease(animation_ease).set_trans(animation_trans)
-				tween.parallel().tween_property(card, "rotation", layout_info.rotation, animation_time).set_ease(animation_ease).set_trans(animation_trans)
-			elif i == _dragging_index:
-				# Card handles the position
-				tween.parallel().tween_property(card, "scale", dragging_scale, animation_time).set_ease(animation_ease).set_trans(animation_trans)
-				tween.parallel().tween_property(card, "rotation", 0, animation_time).set_ease(animation_ease).set_trans(animation_trans)
-			else:
+			elif i != _dragging_index:
 				tween.parallel().tween_property(card, "position", layout_info.position, animation_time).set_ease(animation_ease).set_trans(animation_trans)
-				tween.parallel().tween_property(card, "scale", Vector2.ONE, animation_time).set_ease(animation_ease).set_trans(animation_trans)
-				tween.parallel().tween_property(card, "rotation", layout_info.rotation, animation_time).set_ease(animation_ease).set_trans(animation_trans)
+			tween.play()
 			
 func _set_dynamic_radius(val:bool):
 	dynamic_radius = val
