@@ -79,14 +79,19 @@ func _reset_positions(reculculate_curve:bool = false, animated:bool = true):
 				card.scale = Vector2.ONE
 		else:
 			var tween := create_tween()
-			tween.tween_property(card, "position", layout_info.position, animation_time).set_ease(animation_ease).set_trans(animation_trans)
 			tween.parallel().tween_property(card, "rotation", layout_info.rotation, animation_time).set_ease(animation_ease).set_trans(animation_trans)
 			if i == hovered_index:
+				tween.parallel().tween_property(card, "position", layout_info.position, animation_time).set_ease(animation_ease).set_trans(animation_trans)
 				tween.parallel().tween_property(card, "scale", hovered_scale, animation_time).set_ease(animation_ease).set_trans(animation_trans)
+				tween.parallel().tween_property(card, "rotation", layout_info.rotation, animation_time).set_ease(animation_ease).set_trans(animation_trans)
 			elif i == _dragging_index:
+				# Card handles the position
 				tween.parallel().tween_property(card, "scale", dragging_scale, animation_time).set_ease(animation_ease).set_trans(animation_trans)
+				tween.parallel().tween_property(card, "rotation", 0, animation_time).set_ease(animation_ease).set_trans(animation_trans)
 			else:
+				tween.parallel().tween_property(card, "position", layout_info.position, animation_time).set_ease(animation_ease).set_trans(animation_trans)
 				tween.parallel().tween_property(card, "scale", Vector2.ONE, animation_time).set_ease(animation_ease).set_trans(animation_trans)
+				tween.parallel().tween_property(card, "rotation", layout_info.rotation, animation_time).set_ease(animation_ease).set_trans(animation_trans)
 			
 func _set_dynamic_radius(val:bool):
 	dynamic_radius = val
@@ -113,9 +118,7 @@ func _set_hovered_index(val:int):
 	hovered_index = val
 	if Engine.is_editor_hint():
 		if hovered_index == -1:
-			await get_tree().create_timer(unhover_delay).timeout
-			if hovered_index == -1:
-				_reset_positions()
+			_reset_positions()
 		else:
 			_reset_positions()
 
@@ -152,7 +155,12 @@ func _on_gcard_hovered(card:GCard, on:bool):
 			card_hoverd.emit(card, index)
 			hovered_index = index
 			card.z_index = 1
-	_reset_positions()
+	if hovered_index == -1:
+		await get_tree().create_timer(unhover_delay).timeout
+		if hovered_index == -1:
+			_reset_positions()
+	else:
+		_reset_positions()
 
 func _on_gcard_dragging_started(card:GCard):
 	var index := get_children().find(card)

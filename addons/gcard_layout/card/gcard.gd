@@ -29,7 +29,6 @@ func _on_gui_input(event:InputEvent):
 			_dragging = true
 			_hovered = false
 			_dragging_mouse_position = get_local_mouse_position()
-			rotation = 0
 			z_index = 1
 			gcard_dragging_started.emit(self)
 		elif !mouse_button_event.pressed && mouse_button_event.button_index == MOUSE_BUTTON_LEFT:
