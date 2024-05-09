@@ -3,6 +3,9 @@
 class_name GCardHandLayout
 extends Control
 
+signal card_hoverd(card:Control, index:int)
+signal card_unhovered(card:Control, index:int)
+
 @export_group("idle layout")
 @export var dynamic_radius := true: set = _set_dynamic_radius
 @export var dynamic_radius_factor:float = 100.0: set = _set_dynamic_radius_factor
@@ -21,6 +24,9 @@ extends Control
 @export var animation_time := 0.1: set = _set_animation_time
 @export var animation_ease := Tween.EASE_IN
 @export var animation_trans := Tween.TRANS_QUAD
+
+@export_group("sounds")
+@export var hover_sound:AudioStreamPlayer2D
 
 var gcard_hand_layout_service := GCardHandLayoutService.new()
 
@@ -124,9 +130,14 @@ func _on_child_order_changed():
 	
 func _on_gcard_hovered(card:GCard, on:bool):
 	if handle_mouse_hover_animaiton:
+		var index := get_children().find(card)
 		if !on:
 			card.z_index = 0
+			card_unhovered.emit(card, index)
 			hovered_index = -1
 		else:
-			hovered_index = get_children().find(card)
+			if hover_sound:
+				hover_sound.play()
+			card_hoverd.emit(card, index)
+			hovered_index = index
 			card.z_index = 1
