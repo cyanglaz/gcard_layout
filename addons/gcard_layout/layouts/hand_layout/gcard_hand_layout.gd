@@ -18,6 +18,7 @@ signal card_unhovered(card:Control, index:int)
 @export var hovered_index := -1: set = _set_hovered_index
 @export var hover_padding := 40.0: set = _set_hover_padding
 @export var hovered_scale := Vector2(1.1, 1.1)
+@export var dragging_scale := Vector2(1.1, 1.1)
 @export var unhover_delay := 0.1
 
 @export_group("animation")
@@ -29,6 +30,7 @@ signal card_unhovered(card:Control, index:int)
 @export var hover_sound:AudioStreamPlayer2D
 
 var gcard_hand_layout_service := GCardHandLayoutService.new()
+var _dragging_index:int = -1
 
 func _ready():
 	child_entered_tree.connect(_on_child_entered_tree)
@@ -36,6 +38,8 @@ func _ready():
 	child_order_changed.connect(_on_child_order_changed)
 	for card in get_children():
 		card.gcard_hovered.connect(_on_gcard_hovered)
+		card.gcard_dragging_started.connect(_on_gcard_dragging_started)
+		card.gcard_dragging_finished.connect(_on_gcard_dragging_finished)
 	_reset_positions(false, false)
 	
 func _enter_tree():
@@ -69,6 +73,8 @@ func _reset_positions(reculculate_curve:bool = false, animated:bool = true):
 			card.rotation = layout_info.rotation
 			if i == hovered_index:
 				card.scale = hovered_scale
+			elif i == _dragging_index:
+				card.scale = dragging_scale
 			else:
 				card.scale = Vector2.ONE
 		else:
@@ -77,6 +83,8 @@ func _reset_positions(reculculate_curve:bool = false, animated:bool = true):
 			tween.parallel().tween_property(card, "rotation", layout_info.rotation, animation_time).set_ease(animation_ease).set_trans(animation_trans)
 			if i == hovered_index:
 				tween.parallel().tween_property(card, "scale", hovered_scale, animation_time).set_ease(animation_ease).set_trans(animation_trans)
+			elif i == _dragging_index:
+				tween.parallel().tween_property(card, "scale", dragging_scale, animation_time).set_ease(animation_ease).set_trans(animation_trans)
 			else:
 				tween.parallel().tween_property(card, "scale", Vector2.ONE, animation_time).set_ease(animation_ease).set_trans(animation_trans)
 			
@@ -103,12 +111,13 @@ func _set_card_size(val:Vector2):
 
 func _set_hovered_index(val:int):
 	hovered_index = val
-	if hovered_index == -1:
-		await get_tree().create_timer(unhover_delay).timeout
+	if Engine.is_editor_hint():
 		if hovered_index == -1:
+			await get_tree().create_timer(unhover_delay).timeout
+			if hovered_index == -1:
+				_reset_positions()
+		else:
 			_reset_positions()
-	else:
-		_reset_positions()
 
 func _set_hover_padding(val:float):
 	hover_padding = val
@@ -129,6 +138,8 @@ func _on_child_order_changed():
 	_reset_positions()
 	
 func _on_gcard_hovered(card:GCard, on:bool):
+	if _dragging_index >= 0:
+		return
 	if handle_mouse_hover_animaiton:
 		var index := get_children().find(card)
 		if !on:
@@ -141,3 +152,14 @@ func _on_gcard_hovered(card:GCard, on:bool):
 			card_hoverd.emit(card, index)
 			hovered_index = index
 			card.z_index = 1
+	_reset_positions()
+
+func _on_gcard_dragging_started(card:GCard):
+	var index := get_children().find(card)
+	hovered_index = -1
+	_dragging_index = index
+	_reset_positions()
+	
+func _on_gcard_dragging_finished(card:GCard):
+	_dragging_index = -1
+	_reset_positions()

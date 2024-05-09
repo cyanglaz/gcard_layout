@@ -22,35 +22,37 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_u2yyo")
 card_size = Vector2(80, 100)
+hovered_index = 3
+dragging_scale = null
 
 [node name="GCard" parent="GCardHandLayout" instance=ExtResource("2_hudwu")]
-offset_left = -118.217
+offset_left = -158.217
 offset_top = 6.15582
-offset_right = -38.2172
+offset_right = -78.2172
 offset_bottom = 118.156
 rotation = -0.15708
 
 [node name="GCard2" parent="GCardHandLayout" instance=ExtResource("2_hudwu")]
-offset_left = -79.2296
+offset_left = -119.23
 offset_top = 1.54132
-offset_right = 0.770447
+offset_right = -39.2296
 offset_bottom = 113.541
 rotation = -0.0785398
 
 [node name="GCard3" parent="GCardHandLayout" instance=ExtResource("2_hudwu")]
-offset_left = -40.0
-offset_right = 40.0
+offset_left = -80.0
+offset_right = 0.0
 
 [node name="GCard4" parent="GCardHandLayout" instance=ExtResource("2_hudwu")]
 offset_left = -0.770451
-offset_top = 1.54132
+offset_top = -18.4587
 offset_right = 79.2296
-offset_bottom = 113.541
-rotation = 0.0785398
+offset_bottom = 93.5413
+scale = Vector2(1.1, 1.1)
 
 [node name="GCard5" parent="GCardHandLayout" instance=ExtResource("2_hudwu")]
-offset_left = 38.2172
+offset_left = 78.2172
 offset_top = 6.15582
-offset_right = 118.217
+offset_right = 158.217
 offset_bottom = 118.156
 rotation = 0.15708
