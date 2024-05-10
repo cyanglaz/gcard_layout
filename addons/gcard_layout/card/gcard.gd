@@ -18,7 +18,6 @@ signal state_updated(card:GCard, old_state:State, new_state:State)
 var animation_time := 0.1
 var animation_ease := Tween.EASE_IN
 var animation_trans := Tween.TRANS_QUAD
-var unhover_delay := 0.1
 
 var state:State: set = _set_state
 var idle_rotation:float : set = _set_idle_rotation
@@ -59,7 +58,6 @@ func _on_mouse_entered():
 	
 func _on_mouse_exited():
 	if state == State.HOVER && state != State.DRAGGING:
-		await get_tree().create_timer(unhover_delay).timeout
 		state = State.IDLE
 		z_index = 0
 
