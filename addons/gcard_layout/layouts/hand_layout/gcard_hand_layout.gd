@@ -31,13 +31,12 @@ var gcard_hand_layout_service := GCardHandLayoutService.new()
 var _dragging_index:int = -1
 
 func _ready():
+	_dragging_index = -1
 	child_entered_tree.connect(_on_child_entered_tree)
 	child_exiting_tree.connect(_on_child_existing_tree)
 	child_order_changed.connect(_on_child_order_changed)
 	for card in get_children():
-		card.gcard_hovered.connect(_on_gcard_hovered)
-		card.gcard_dragging_started.connect(_on_gcard_dragging_started)
-		card.gcard_dragging_finished.connect(_on_gcard_dragging_finished)
+		(card as GCard).state_updated.connect(_on_gcard_state_updated)
 	_reset_positions(false, false)
 	
 func _enter_tree():
@@ -61,21 +60,24 @@ func _reset_positions(reculculate_curve:bool = false, animated:bool = true):
 	gcard_hand_layout_service.circle_percentage = circle_percentage
 	gcard_hand_layout_service.card_size = card_size
 	gcard_hand_layout_service.hover_padding = hover_padding
+	print(hovered_index)
 	gcard_hand_layout_service.hovered_index = hovered_index
 	var layout_infos := gcard_hand_layout_service.get_card_layouts()
 	for i in number_of_cards:
 		var card:Control = get_children()[i]
+		card.animation_time = animation_time
+		card.animation_ease = animation_ease
+		card.animation_trans = animation_trans
+		card.unhover_delay = unhover_delay
 		var layout_info:GCardLayoutInfo = layout_infos[i]
+		card.idle_rotation = layout_info.rotation
 		if animation_time <= 0.0 || !animated:
 			card.position = layout_info.position
-			card.idle_rotation = layout_info.rotation
 		else:
 			var tween := create_tween()
-			if i == hovered_index:
-				tween.parallel().tween_property(card, "position", layout_info.position, animation_time).set_ease(animation_ease).set_trans(animation_trans)
-			elif i != _dragging_index:
-				tween.parallel().tween_property(card, "position", layout_info.position, animation_time).set_ease(animation_ease).set_trans(animation_trans)
-			tween.play()
+			if i != _dragging_index:
+				tween.tween_property(card, "position", layout_info.position, animation_time).set_ease(animation_ease).set_trans(animation_trans)
+				tween.play()
 			
 func _set_dynamic_radius(val:bool):
 	dynamic_radius = val
@@ -116,7 +118,7 @@ func _set_animation_time(val:float):
 			
 func _on_child_entered_tree(child:Node):
 	_reset_positions()
-	(child as GCard).gcard_hovered.connect(_on_gcard_hovered)
+	(child as GCard).state_updated.connect(_on_gcard_state_updated)
 
 func _on_child_existing_tree(_child:Node):
 	_reset_positions()
@@ -130,7 +132,6 @@ func _on_gcard_hovered(card:GCard, on:bool):
 	if handle_mouse_hover_animaiton:
 		var index := get_children().find(card)
 		if !on:
-			card.z_index = 0
 			card_unhovered.emit(card, index)
 			hovered_index = -1
 		else:
@@ -138,20 +139,26 @@ func _on_gcard_hovered(card:GCard, on:bool):
 				hover_sound.play()
 			card_hoverd.emit(card, index)
 			hovered_index = index
-			card.z_index = 1
-	if hovered_index == -1:
-		await get_tree().create_timer(unhover_delay).timeout
-		if hovered_index == -1:
-			_reset_positions()
-	else:
-		_reset_positions()
+	_reset_positions()
 
 func _on_gcard_dragging_started(card:GCard):
 	var index := get_children().find(card)
-	hovered_index = -1
 	_dragging_index = index
 	_reset_positions()
 	
 func _on_gcard_dragging_finished(card:GCard):
 	_dragging_index = -1
 	_reset_positions()
+
+func _on_gcard_state_updated(card:GCard, old_state:GCard.State, new_state:GCard.State):
+	if old_state == new_state:
+		return
+	if old_state == GCard.State.DRAGGING:
+		_on_gcard_dragging_finished(card)
+	elif new_state == GCard.State.DRAGGING:
+		_on_gcard_dragging_started(card)
+	if old_state == GCard.State.HOVER:
+		_on_gcard_hovered(card, false)
+	elif new_state == GCard.State.HOVER:
+		_on_gcard_hovered(card, true)
+		
