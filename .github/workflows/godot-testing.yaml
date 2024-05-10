@@ -1,0 +1,27 @@
+name: Godot testing
+
+on: [ push ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: croconut/godot-tester@v5
+      with:
+        # required
+        version: "4.2.2"
+        # the folder with your project.godot file in it
+        path: "./"
+        # how long to spend importing assets before tests are run
+        import-time: "5"
+        # how long tests can run in seconds
+        test-timeout: "45"
+        # the ratio of tests that must pass for this action to pass
+        # e.g. 0.6 means 60% of your tests must pass
+        minimum-pass: "1.0"
+        # the directory containing Gut tests
+        test-dir: "res://tests"
+        # not checked by default, set to a number to limit the 
+        # maximum amount of failed tests for a passing test suite
+        max-fails: 1 
