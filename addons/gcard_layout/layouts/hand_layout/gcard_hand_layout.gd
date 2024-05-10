@@ -13,7 +13,7 @@ signal card_unhovered(card:Control, index:int)
 @export var circle_percentage:float = 0.05: set = _set_circle_percentage
 @export var card_size:Vector2: set = _set_card_size
 
-@export_group("hover layout")
+@export_group("hover")
 @export var handle_mouse_hover_animaiton := true
 @export var hovered_index := -1: set = _set_hovered_index
 @export var hover_padding := 40.0: set = _set_hover_padding
@@ -53,6 +53,8 @@ func _validate_property(property):
 
 func _reset_positions(reculculate_curve:bool = false, animated:bool = true):
 	var number_of_cards := get_child_count()
+	if _dragging_index >= 0:
+		number_of_cards -= 1
 	gcard_hand_layout_service.number_of_cards = number_of_cards
 	gcard_hand_layout_service.dynamic_radius = dynamic_radius
 	gcard_hand_layout_service.dynamic_radius_factor = dynamic_radius_factor
@@ -62,21 +64,24 @@ func _reset_positions(reculculate_curve:bool = false, animated:bool = true):
 	gcard_hand_layout_service.hover_padding = hover_padding
 	gcard_hand_layout_service.hovered_index = hovered_index
 	var layout_infos := gcard_hand_layout_service.get_card_layouts()
-	for i in number_of_cards:
+	var position_index := 0
+	for i in get_child_count():
+		if i == _dragging_index:
+			continue
 		var card:Control = get_children()[i]
 		card.animation_time = animation_time
 		card.animation_ease = animation_ease
 		card.animation_trans = animation_trans
 		card.unhover_delay = unhover_delay
-		var layout_info:GCardLayoutInfo = layout_infos[i]
+		var layout_info:GCardLayoutInfo = layout_infos[position_index]
 		card.idle_rotation = layout_info.rotation
 		if animation_time <= 0.0 || !animated:
 			card.position = layout_info.position
 		else:
-			if i != _dragging_index:
-				var tween := create_tween()
-				tween.tween_property(card, "position", layout_info.position, animation_time).set_ease(animation_ease).set_trans(animation_trans)
-				tween.play()
+			var tween := create_tween()
+			tween.tween_property(card, "position", layout_info.position, animation_time).set_ease(animation_ease).set_trans(animation_trans)
+			tween.play()
+		position_index += 1
 			
 func _set_dynamic_radius(val:bool):
 	dynamic_radius = val
@@ -125,37 +130,37 @@ func _on_child_existing_tree(_child:Node):
 func _on_child_order_changed():
 	_reset_positions()
 	
-func _on_gcard_hovered(card:GCard, enter:bool):
-	#if enter:
-		#for child_card in get_children():
-			#child_card.enable_mouse_enter = card == child_card
-	#else:
-		#for child_card in get_children():
-			#child_card.enable_mouse_enter = true
-	if handle_mouse_hover_animaiton:
-		var index := get_children().find(card)
-		if enter:
-			if hover_sound:
-				hover_sound.play()
-			card_hoverd.emit(card, index)
-			hovered_index = index
-		else:
-			if hovered_index == index:
-				hovered_index = -1
-				card_unhovered.emit(card, index)
+func _on_hover_started(card:GCard):
+	if hover_sound:
+		hover_sound.play()
+	var index := get_children().find(card)
+	card_hoverd.emit(card, index)
+	hovered_index = index
+	_reset_positions()
+	print("hover started _reset_positions ", card)
+
+func _on_hover_ended(card:GCard):
+	var index := get_children().find(card)
+	if hovered_index == index:
+		hovered_index = -1
+		card_unhovered.emit(card, index)
 		_reset_positions()
+		print("hover ended _reset_positions ", card)
 
 func _on_gcard_dragging_started(card:GCard):
 	for child_card in get_children():
 		child_card.enable_mouse_enter = card == child_card
 	var index := get_children().find(card)
+	hovered_index = -1
 	_dragging_index = index
 	_reset_positions()
+	print("dragging start _reset_positions")
 	
 func _on_gcard_dragging_finished(card:GCard):
 	for child_card in get_children():
 		child_card.enable_mouse_enter = true
 	_dragging_index = -1
+	print("dragging finished _reset_positions")
 	_reset_positions()
 
 func _on_gcard_state_updated(card:GCard, old_state:GCard.State, new_state:GCard.State):
@@ -165,8 +170,8 @@ func _on_gcard_state_updated(card:GCard, old_state:GCard.State, new_state:GCard.
 		_on_gcard_dragging_finished(card)
 	elif new_state == GCard.State.DRAGGING:
 		_on_gcard_dragging_started(card)
-	if old_state == GCard.State.HOVER:
-		_on_gcard_hovered(card, false)
-	elif new_state == GCard.State.HOVER:
-		_on_gcard_hovered(card, true)
+	if old_state == GCard.State.HOVER && new_state == GCard.State.IDLE:
+		_on_hover_ended(card)
+	elif new_state == GCard.State.HOVER && old_state == GCard.State.IDLE:
+		_on_hover_started(card)
 		

@@ -59,7 +59,7 @@ func _on_mouse_entered():
 	
 func _on_mouse_exited():
 	if state == State.HOVER && state != State.DRAGGING:
-		#await get_tree().create_timer(unhover_delay).timeout
+		await get_tree().create_timer(unhover_delay).timeout
 		state = State.IDLE
 		z_index = 0
 
