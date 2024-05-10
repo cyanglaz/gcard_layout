@@ -22,6 +22,7 @@ var unhover_delay := 0.1
 
 var state:State: set = _set_state
 var idle_rotation:float : set = _set_idle_rotation
+var enable_mouse_enter := true
 
 var _dragging_mouse_position:Vector2
 
@@ -50,13 +51,15 @@ func _on_gui_input(event:InputEvent):
 			z_index = 0
 
 func _on_mouse_entered():
+	if !enable_mouse_enter:
+		return
 	if state != State.DRAGGING:
 		state = State.HOVER
 		z_index = 1
 	
 func _on_mouse_exited():
-	if state != State.DRAGGING:
-		await get_tree().create_timer(unhover_delay).timeout
+	if state == State.HOVER && state != State.DRAGGING:
+		#await get_tree().create_timer(unhover_delay).timeout
 		state = State.IDLE
 		z_index = 0
 

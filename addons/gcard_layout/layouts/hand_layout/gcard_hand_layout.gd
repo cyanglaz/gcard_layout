@@ -60,7 +60,6 @@ func _reset_positions(reculculate_curve:bool = false, animated:bool = true):
 	gcard_hand_layout_service.circle_percentage = circle_percentage
 	gcard_hand_layout_service.card_size = card_size
 	gcard_hand_layout_service.hover_padding = hover_padding
-	print(hovered_index)
 	gcard_hand_layout_service.hovered_index = hovered_index
 	var layout_infos := gcard_hand_layout_service.get_card_layouts()
 	for i in number_of_cards:
@@ -126,27 +125,36 @@ func _on_child_existing_tree(_child:Node):
 func _on_child_order_changed():
 	_reset_positions()
 	
-func _on_gcard_hovered(card:GCard, on:bool):
-	if _dragging_index >= 0:
-		return
+func _on_gcard_hovered(card:GCard, enter:bool):
+	#if enter:
+		#for child_card in get_children():
+			#child_card.enable_mouse_enter = card == child_card
+	#else:
+		#for child_card in get_children():
+			#child_card.enable_mouse_enter = true
 	if handle_mouse_hover_animaiton:
 		var index := get_children().find(card)
-		if !on:
-			card_unhovered.emit(card, index)
-			hovered_index = -1
-		else:
+		if enter:
 			if hover_sound:
 				hover_sound.play()
 			card_hoverd.emit(card, index)
 			hovered_index = index
-	_reset_positions()
+		else:
+			if hovered_index == index:
+				hovered_index = -1
+				card_unhovered.emit(card, index)
+		_reset_positions()
 
 func _on_gcard_dragging_started(card:GCard):
+	for child_card in get_children():
+		child_card.enable_mouse_enter = card == child_card
 	var index := get_children().find(card)
 	_dragging_index = index
 	_reset_positions()
 	
 func _on_gcard_dragging_finished(card:GCard):
+	for child_card in get_children():
+		child_card.enable_mouse_enter = true
 	_dragging_index = -1
 	_reset_positions()
 
