@@ -3,8 +3,10 @@
 class_name GCardHandLayout
 extends Control
 
-signal card_hoverd(card:Control, index:int)
-signal card_unhovered(card:Control, index:int)
+signal card_hoverd(card:GCard, index:int)
+signal card_unhovered(card:GCard, index:int)
+signal card_dragging_started(card:GCard. index:int)
+signal card_dragging_finished(card:GCard. index:int)
 
 @export_group("idle layout")
 @export var dynamic_radius := true: set = _set_dynamic_radius
@@ -138,16 +140,16 @@ func _on_hover_started(card:GCard):
 	if hover_sound:
 		hover_sound.play()
 	var index := get_children().find(card)
-	card_hoverd.emit(card, index)
 	hovered_index = index
 	_reset_positions()
+	card_hoverd.emit(card, index)
 
 func _on_hover_ended(card:GCard):
 	var index := get_children().find(card)
 	if hovered_index == index:
 		hovered_index = -1
-		card_unhovered.emit(card, index)
 		_reset_positions()
+		card_unhovered.emit(card, index)
 
 func _on_gcard_dragging_started(card:GCard):
 	for child_card in get_children():
@@ -156,12 +158,15 @@ func _on_gcard_dragging_started(card:GCard):
 	hovered_index = -1
 	_dragging_index = index
 	_reset_positions()
+	card_dragging_started.emit(card, _dragging_index)
 	
 func _on_gcard_dragging_finished(card:GCard):
 	for child_card in get_children():
 		child_card.enable_mouse_enter = true
+	var dragging_index = _dragging_index
 	_dragging_index = -1
 	_reset_positions()
+	card_dragging_started.emit(card, dragging_index)
 
 func _on_gcard_state_updated(card:GCard, old_state:GCard.State, new_state:GCard.State):
 	if old_state == new_state:
