@@ -1,5 +1,5 @@
 @tool
-@icon("res://addons/gcard_layout/resources/icons/card_base.svg")
+@icon("res://addons/gcard_layout/resources/icons/card_icon.svg")
 class_name GCard
 extends Control
 

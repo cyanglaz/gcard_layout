@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://clwhnldji6wy3"
-path="res://.godot/imported/card_hand_layout.svg-f811513ac52d9a28f4b21f70bc27978f.ctex"
+uid="uid://cjh47o3aknluo"
+path="res://.godot/imported/hand_layout_icon.svg-c0194c6da5eb0d3fd3e286eac030920a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/gcard_layout/resources/icons/card_hand_layout.svg"
-dest_files=["res://.godot/imported/card_hand_layout.svg-f811513ac52d9a28f4b21f70bc27978f.ctex"]
+source_file="res://addons/gcard_layout/resources/icons/hand_layout_icon.svg"
+dest_files=["res://.godot/imported/hand_layout_icon.svg-c0194c6da5eb0d3fd3e286eac030920a.ctex"]
 
 [params]
 
