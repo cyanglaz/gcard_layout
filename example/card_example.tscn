@@ -1,0 +1,44 @@
+[gd_scene load_steps=4 format=3 uid="uid://c871odxcp2l05"]
+
+[ext_resource type="Script" path="res://addons/gcard_layout/card/gcard.gd" id="1_5plqr"]
+[ext_resource type="Texture2D" uid="uid://ci8gojvqa6y1k" path="res://icon.svg" id="1_bv68t"]
+[ext_resource type="Texture2D" uid="uid://cdmxt8mu6jqhn" path="res://example/resource/sprites/card_example.svg" id="2_x5rw8"]
+
+[node name="GCard" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 80.0
+offset_bottom = 112.0
+pivot_offset = Vector2(40, 2.08165e-12)
+script = ExtResource("1_5plqr")
+hovered_scale = null
+dragging_scale = null
+animation_ease = null
+animation_trans = null
+
+[node name="Frame" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("2_x5rw8")
+expand_mode = 1
+stretch_mode = 4
+
+[node name="Image" type="TextureRect" parent="Frame"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -25.0
+offset_top = 9.0
+offset_right = 25.0
+offset_bottom = 59.0
+grow_horizontal = 2
+mouse_filter = 2
+texture = ExtResource("1_bv68t")
+expand_mode = 1
+stretch_mode = 4
