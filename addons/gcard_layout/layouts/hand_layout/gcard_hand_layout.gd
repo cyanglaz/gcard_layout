@@ -5,8 +5,8 @@ extends Control
 
 signal card_hoverd(card:GCard, index:int)
 signal card_unhovered(card:GCard, index:int)
-signal card_dragging_started(card:GCard. index:int)
-signal card_dragging_finished(card:GCard. index:int)
+signal card_dragging_started(card:GCard, index:int)
+signal card_dragging_finished(card:GCard, index:int)
 
 @export_group("idle layout")
 @export var dynamic_radius := true: set = _set_dynamic_radius
@@ -34,16 +34,15 @@ var _reset_position_tween:Tween
 
 func _ready():
 	_dragging_index = -1
-	child_entered_tree.connect(_on_child_entered_tree)
-	child_exiting_tree.connect(_on_child_existing_tree)
 	child_order_changed.connect(_on_child_order_changed)
 	for card in get_children():
 		(card as GCard).state_updated.connect(_on_gcard_state_updated)
-	_reset_positions(false, false)
+	if get_child_count() > 0:
+		_reset_positions_if_in_tree(false, false)
 	
 func _enter_tree():
-	if is_node_ready():
-		_reset_positions(false, false)
+	if is_node_ready() && get_child_count() > 0:
+		_reset_positions_if_in_tree(false, false)
 	
 func _validate_property(property):
 	if property.name in ["radius"] && dynamic_radius:
@@ -52,6 +51,10 @@ func _validate_property(property):
 		property.usage = PROPERTY_USAGE_NO_EDITOR
 	if property.name in ["animation_ease", "animation_trans"] && animation_time <= 0.0:
 		property.usage = PROPERTY_USAGE_NO_EDITOR
+	
+func _reset_positions_if_in_tree(reculculate_curve:bool = false, animated:bool = true):
+	if is_inside_tree():
+		_reset_positions(reculculate_curve, animated)
 
 func _reset_positions(reculculate_curve:bool = false, animated:bool = true):
 	var number_of_cards := get_child_count()
@@ -65,7 +68,7 @@ func _reset_positions(reculculate_curve:bool = false, animated:bool = true):
 	gcard_hand_layout_service.card_size = card_size
 	gcard_hand_layout_service.hover_padding = hover_padding
 	gcard_hand_layout_service.hovered_index = hovered_index
-	var should_animate := animation_time > 0.0 && animated && number_of_cards > 0
+	var should_animate := animation_time > 0.0 && animated && number_of_cards > 0 && is_inside_tree()
 	var layout_infos := gcard_hand_layout_service.get_card_layouts()
 	var position_index := 0
 	if _reset_position_tween && _reset_position_tween.is_running():
@@ -90,65 +93,64 @@ func _reset_positions(reculculate_curve:bool = false, animated:bool = true):
 		_reset_position_tween.play()
 			
 func _set_dynamic_radius(val:bool):
+	if dynamic_radius == val:
+		return
 	dynamic_radius = val
 	notify_property_list_changed()
-	_reset_positions()
+	_reset_positions_if_in_tree()
 
 func _set_dynamic_radius_factor(val:float):
 	dynamic_radius_factor = val
-	_reset_positions()
+	_reset_positions_if_in_tree()
 
 func _set_radius(val:float):
 	radius = val
-	_reset_positions()
+	_reset_positions_if_in_tree()
 	
 func _set_circle_percentage(val:float):
 	circle_percentage = val
-	_reset_positions()
+	_reset_positions_if_in_tree()
 	
 func _set_card_size(val:Vector2):
 	card_size = val
-	_reset_positions()
+	_reset_positions_if_in_tree()
 
 func _set_hovered_index(val:int):
 	hovered_index = val
 	if Engine.is_editor_hint():
 		if hovered_index == -1:
-			_reset_positions()
+			_reset_positions_if_in_tree()
 		else:
-			_reset_positions()
+			_reset_positions_if_in_tree()
 
 func _set_hover_padding(val:float):
 	hover_padding = val
-	_reset_positions()
+	_reset_positions_if_in_tree()
 
 func _set_animation_time(val:float):
 	animation_time = val
 	notify_property_list_changed()
-			
-func _on_child_entered_tree(child:Node):
-	_reset_positions()
-	(child as GCard).state_updated.connect(_on_gcard_state_updated)
-
-func _on_child_existing_tree(_child:Node):
-	_reset_positions()
 
 func _on_child_order_changed():
-	_reset_positions()
+	for child in get_children():
+		var gcard := (child as GCard)
+		if !gcard.state_updated.is_connected(_on_gcard_state_updated):
+			gcard.state_updated.connect(_on_gcard_state_updated)
+	_reset_positions_if_in_tree()
 	
 func _on_hover_started(card:GCard):
 	if hover_sound:
 		hover_sound.play()
 	var index := get_children().find(card)
 	hovered_index = index
-	_reset_positions()
+	_reset_positions_if_in_tree()
 	card_hoverd.emit(card, index)
 
 func _on_hover_ended(card:GCard):
 	var index := get_children().find(card)
 	if hovered_index == index:
 		hovered_index = -1
-		_reset_positions()
+		_reset_positions_if_in_tree()
 		card_unhovered.emit(card, index)
 
 func _on_gcard_dragging_started(card:GCard):
@@ -157,7 +159,7 @@ func _on_gcard_dragging_started(card:GCard):
 	var index := get_children().find(card)
 	hovered_index = -1
 	_dragging_index = index
-	_reset_positions()
+	_reset_positions_if_in_tree()
 	card_dragging_started.emit(card, _dragging_index)
 	
 func _on_gcard_dragging_finished(card:GCard):
@@ -165,7 +167,7 @@ func _on_gcard_dragging_finished(card:GCard):
 		child_card.enable_mouse_enter = true
 	var dragging_index = _dragging_index
 	_dragging_index = -1
-	_reset_positions()
+	_reset_positions_if_in_tree()
 	card_dragging_started.emit(card, dragging_index)
 
 func _on_gcard_state_updated(card:GCard, old_state:GCard.State, new_state:GCard.State):

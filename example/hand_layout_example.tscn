@@ -22,28 +22,21 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_u2yyo")
 card_size = Vector2(80, 100)
-unhover_delay = 0.1
 
-[node name="GCard" parent="GCardHandLayout" instance=ExtResource("2_hudwu")]
-offset_left = -86.9303
-offset_top = 3.69351
-offset_right = -6.93039
-offset_bottom = 115.694
+[node name="GCard2" parent="GCardHandLayout" instance=ExtResource("2_hudwu")]
+offset_left = -71.2869
+offset_top = 2.46233
+offset_right = 8.7131
+offset_bottom = 114.462
 rotation = -0.15708
 hovered_scale = Vector2(1.1, 1.1)
 dragging_scale = Vector2(1.1, 1.1)
 
-[node name="GCard2" parent="GCardHandLayout" instance=ExtResource("2_hudwu")]
-offset_left = -40.0
-offset_right = 40.0
-hovered_scale = Vector2(1.1, 1.1)
-dragging_scale = Vector2(1.1, 1.1)
-
-[node name="GCard3" parent="GCardHandLayout" instance=ExtResource("2_hudwu")]
-offset_left = 6.93034
-offset_top = 3.69351
-offset_right = 86.9302
-offset_bottom = 115.694
+[node name="GCard" parent="GCardHandLayout" instance=ExtResource("2_hudwu")]
+offset_left = -8.71311
+offset_top = 2.46233
+offset_right = 71.2868
+offset_bottom = 114.463
 rotation = 0.15708
 hovered_scale = Vector2(1.1, 1.1)
 dragging_scale = Vector2(1.1, 1.1)
