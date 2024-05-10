@@ -60,7 +60,9 @@ func test_reset_position_on_card_drag():
 	add_child(hand_layout)
 	assert_call_count(hand_layout, "_reset_positions", 1)
 	var gcard:GCard = hand_layout.get_children().front()
-	gcard.state = GCard.State.DRAGGING
+	var event = InputFactory.mouse_left_button_down(gcard.position, gcard.global_position)
+	var sender = InputSender.new(gcard)
+	sender.send_event(event)
 	assert_eq(gcard.state, GCard.State.DRAGGING)
 	assert_call_count(hand_layout, "_reset_positions", 2)
 

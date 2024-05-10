@@ -36,6 +36,7 @@ func _ready():
 
 func _process(_delta: float) -> void:
 	if state == State.DRAGGING:
+		print(get_global_mouse_position())
 		global_position = get_global_mouse_position() - _dragging_mouse_position
 
 func _on_gui_input(event:InputEvent):
