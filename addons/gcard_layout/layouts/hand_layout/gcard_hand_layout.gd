@@ -73,8 +73,8 @@ func _reset_positions(reculculate_curve:bool = false, animated:bool = true):
 		if animation_time <= 0.0 || !animated:
 			card.position = layout_info.position
 		else:
-			var tween := create_tween()
 			if i != _dragging_index:
+				var tween := create_tween()
 				tween.tween_property(card, "position", layout_info.position, animation_time).set_ease(animation_ease).set_trans(animation_trans)
 				tween.play()
 			
