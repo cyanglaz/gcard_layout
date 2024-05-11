@@ -11,10 +11,6 @@ offset_right = 80.0
 offset_bottom = 112.0
 pivot_offset = Vector2(40, 2.08165e-12)
 script = ExtResource("1_5plqr")
-hovered_scale = null
-dragging_scale = null
-animation_ease = null
-animation_trans = null
 
 [node name="Frame" type="TextureRect" parent="."]
 layout_mode = 1
