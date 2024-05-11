@@ -9,13 +9,28 @@ signal card_dragging_started(card:GCard, index:int)
 signal card_dragging_finished(card:GCard, index:int)
 
 @export_group("idle layout")
+## Set radius dynamically based on the number of cards. ([member radius] = [member dynamic_radius_factor] * number_of_cards).[br][br]
+## If [b]true[/b], [member radius] is ignored.
 @export var dynamic_radius := true: set = _set_dynamic_radius
+## If [member dynamic_radius] is [br]true[/br], this value is used to compute the radius to create the curve based on the number of cards.[br]
+## A bigger value creates a flatter curve and more seperation between the cards.[br][br]
+## If [member dynamic_radius] is [br]false[/br], this is ignored.
 @export var dynamic_radius_factor:float = 100.0: set = _set_dynamic_radius_factor
-@export var radius := 1000: set = _set_radius
+## A fixed radius used to create the curve.[br][br]
+## If [member dynamic_radius] is [b]true[/b], this is ignored.
+@export var radius := 1000.0: set = _set_radius
+## Determines how much of a circle to use for the curve.[br][br]
+## A value of [b]0.0[/b] creates a point, and a value of [b]1.0[/b] creates a full circle.
+## Usually a value between [b]0.1[/b] and [b]0.03[/b] is suitable for a card hand layout.
 @export var circle_percentage:float = 0.05: set = _set_circle_percentage
+## The size of the card.[br][br]
+## This has to match the size of the child.
 @export var card_size:Vector2: set = _set_card_size
 
 @export_group("hover")
+## Whether this layout node should handle hover animation.[br][br]
+##
+## 
 @export var handle_mouse_hover_animaiton := true
 @export var hovered_index := -1: set = _set_hovered_index
 @export var hover_padding := 40.0: set = _set_hover_padding
