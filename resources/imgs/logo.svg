@@ -2,9 +2,9 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="128"
-   height="128"
-   viewBox="0 0 33.866667 33.866666"
+   width="256"
+   height="256"
+   viewBox="0 0 67.733334 67.733332"
    version="1.1"
    id="svg1"
    xml:space="preserve"
@@ -23,21 +23,22 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
-     inkscape:zoom="8.6348683"
-     inkscape:cx="59.352382"
-     inkscape:cy="76.95543"
+     inkscape:zoom="1.885227"
+     inkscape:cx="134.99701"
+     inkscape:cy="81.422557"
      inkscape:window-width="1680"
      inkscape:window-height="1212"
-     inkscape:window-x="2989"
-     inkscape:window-y="83"
+     inkscape:window-x="2966"
+     inkscape:window-y="56"
      inkscape:window-maximized="0"
      inkscape:current-layer="layer1" /><defs
      id="defs1" /><g
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
-     id="layer1"><g
+     id="layer1"
+     transform="matrix(4.3079357,0,0,4.3079357,-37.395854,-38.958822)"><g
        id="g1"
-       transform="matrix(0.1280493,0,0,0.13240958,8.3469964,11.379892)"
+       transform="matrix(0.1280493,0,0,0.13240958,8.3469953,11.446156)"
        inkscape:label="Godot"
        style="display:inline;stroke:#080808;stroke-opacity:1"><g
          transform="matrix(0.101,0,0,0.101,12.288,-24.142048)"
@@ -87,14 +88,14 @@
              inkscape:label="circle6"
              style="stroke:#080808;stroke-opacity:1" /></g></g></g><g
        id="g8"
-       transform="matrix(0.04255687,0,0,0.04255687,10.315024,20.756917)"
+       transform="matrix(0.04255687,0,0,0.04255687,10.315022,20.823181)"
        inkscape:label="Cards"><rect
          style="display:inline;opacity:1;fill:#24689b;fill-opacity:1;stroke:#080808;stroke-width:11.179;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:stroke fill markers"
          id="rect14"
          width="88.706955"
          height="146.9875"
-         x="-13.095275"
-         y="-38.887218"
+         x="-8.915946"
+         y="-44.571541"
          ry="2.3646815"
          rx="1.5445035"
          inkscape:label="rect4"
@@ -132,8 +133,8 @@
          id="rect13"
          width="88.70694"
          height="146.98752"
-         x="176.01643"
-         y="-192.89586"
+         x="171.6442"
+         y="-200.01045"
          ry="2.3646822"
          rx="1.5445031"
          inkscape:label="rect4"
