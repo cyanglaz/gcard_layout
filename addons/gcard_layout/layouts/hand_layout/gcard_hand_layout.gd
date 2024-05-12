@@ -1,11 +1,18 @@
 @tool
 @icon("res://addons/gcard_layout/resources/icons/hand_layout_icon.svg")
+## A node to help layout [GCard] in a hand layout.[br][br]
+## Simply add [GCard]s as children to form the layout. Adding other nodes as children cause undefined behavior.
+## To make the layout more customized, create a custom control scene and use [GCardHandLayoutService] as a helper.
 class_name GCardHandLayout
 extends Control
 
+## Emits when a card is hovered.
 signal card_hoverd(card:GCard, index:int)
+## Emits when a card is unhovered.
 signal card_unhovered(card:GCard, index:int)
+## Emits when a card starts being dragged.
 signal card_dragging_started(card:GCard, index:int)
+## Emits when a dragged card is released.
 signal card_dragging_finished(card:GCard, index:int)
 
 @export_group("idle layout")
@@ -29,18 +36,25 @@ signal card_dragging_finished(card:GCard, index:int)
 
 @export_group("hover")
 ## Whether this layout node should handle hover animation.[br][br]
-##
-## 
 @export var handle_mouse_hover_animaiton := true
+## The card index that is currently being hovered.[br][br]
+## This is useful when testing layout in the inspector.[br][br]
 @export var hovered_index := -1: set = _set_hovered_index
+## How much pixels do un-hovered card move away from the hovered card.[br][br]
+## The cards to the left of the hovered card move to the left, the cards to the right move to the right.[br][br]
 @export var hover_padding := 40.0: set = _set_hover_padding
 
-@export_group("animation")
+@export_group("animation") 
+## The duration of all the animation related to layout, e.g. hover, reset position. [br][br]
+## When value is set to [br]0.0[/br], animations are disabled.
 @export var animation_time := 0.1: set = _set_animation_time
+## The ease used for the animations.
 @export var animation_ease := Tween.EASE_IN
+## The trans used for the animations.
 @export var animation_trans := Tween.TRANS_QUAD
 
 @export_group("sounds")
+## Plays when a card is hovered.
 @export var hover_sound:AudioStreamPlayer2D
 
 var gcard_hand_layout_service := GCardHandLayoutService.new()

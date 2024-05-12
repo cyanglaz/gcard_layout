@@ -22,21 +22,20 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_u2yyo")
 dynamic_radius_factor = 200.0
-radius = 1000
 circle_percentage = 0.04
 card_size = Vector2(80, 100)
 
 [node name="GCard2" parent="GCardHandLayout" instance=ExtResource("2_hudwu")]
 offset_left = -165.333
 offset_top = 7.88531
-offset_right = -85.3337
+offset_right = -85.3343
 offset_bottom = 119.885
 rotation = -0.125664
 
 [node name="GCard3" parent="GCardHandLayout" instance=ExtResource("2_hudwu")]
 offset_left = -102.791
 offset_top = 1.97327
-offset_right = -22.7906
+offset_right = -22.7891
 offset_bottom = 113.973
 rotation = -0.0628319
 
