@@ -122,7 +122,6 @@ func test_change_parameters_reset_position():
 		var card:Control = autofree(Control).new()
 		hand_layout.add_child(card)
 	add_child(hand_layout)
-	var number_called := 0
 	assert_call_count(hand_layout, "_reset_positions", 1)
 	
 	hand_layout.dynamic_radius = hand_layout.dynamic_radius
