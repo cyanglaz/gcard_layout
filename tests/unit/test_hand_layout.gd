@@ -5,6 +5,8 @@ var _sender = InputSender.new(Input)
 
 func before_each():
 	hand_layout = autofree(partial_double(GCardHandLayout).new())
+	watch_signals(hand_layout)
+	hand_layout.animation_time = -1.0
 
 func after_each():
 	_sender.release_all()
@@ -13,7 +15,7 @@ func after_each():
 func test_reset_positions_on_child_order_change():
 	add_child(hand_layout)
 	for i in 5:
-		var card:GCard = autofree(GCard.new())
+		var card:Control = autofree(Control.new())
 		hand_layout.add_child(card)
 	assert_call_count(hand_layout, "_reset_positions", 5)
 	
@@ -22,69 +24,104 @@ func test_reset_positions_on_child_order_change():
 
 func test_reset_position_on_ready():
 	for i in 5:
-		var card:GCard = autofree(GCard.new())
+		var card:Control = autofree(Control.new())
 		hand_layout.add_child(card)
 	add_child(hand_layout)
 	assert_call_count(hand_layout, "_reset_positions", 1)
 
 func test_reset_position_on_card_hover():
 	for i in 5:
-		var card:GCard = autofree(partial_double(GCard).new())
+		var card:Control = autofree(Control.new())
 		hand_layout.add_child(card)
 	add_child(hand_layout)
 	assert_call_count(hand_layout, "_reset_positions", 1)
-	var gcard:GCard = hand_layout.get_children().front()
+	var gcard:Control = hand_layout.get_children().front()
+	var position_before_hover := gcard.position
+	gcard.size = Vector2(100, 100)
+	stub(hand_layout, "_get_global_mouse_position_for_interaction").to_return(gcard.position+Vector2.ONE)
 	gcard.mouse_entered.emit()
-	assert_eq(gcard.state, GCard.State.HOVER)
-	assert_call_count(gcard, "_on_mouse_entered", 1)
+	assert_call_count(hand_layout, "_on_child_mouse_entered", 1)
+	gut.simulate(hand_layout, 1, .1)
 	assert_call_count(hand_layout, "_reset_positions", 2)
+	assert_almost_eq(gcard.position, position_before_hover+hand_layout.hover_relative_position, Vector2(0.01, 0.01))
+	assert_almost_eq(gcard.scale, hand_layout.hovered_scale, Vector2(0.01, 0.01))
+	assert_signal_emitted(hand_layout, "card_hoverd")
 
 func test_reset_position_on_card_unhover():
 	for i in 5:
-		var card:GCard = autofree(partial_double(GCard).new())
+		var card:Control = autofree(Control.new())
 		hand_layout.add_child(card)
 	add_child(hand_layout)
 	assert_call_count(hand_layout, "_reset_positions", 1)
-	var gcard:GCard = hand_layout.get_children().front()
+	var gcard:Control = hand_layout.get_children().front()
+	var position_before_hover := gcard.position
+	gcard.size = Vector2(100, 100)
+	stub(hand_layout, "_get_global_mouse_position_for_interaction").to_return(gcard.position+Vector2.ONE)
 	gcard.mouse_entered.emit()
-	assert_eq(gcard.state, GCard.State.HOVER)
+	assert_call_count(hand_layout, "_on_child_mouse_entered", 1)
+	gut.simulate(hand_layout, 1, .1)
+	assert_call_count(hand_layout, "_reset_positions", 2)
+	
+	stub(hand_layout, "_get_global_mouse_position_for_interaction").to_return(gcard.position+Vector2(150, 150))
 	gcard.mouse_exited.emit()
-	assert_eq(gcard.state, GCard.State.IDLE)
-	assert_call_count(gcard, "_on_mouse_entered", 1)
+	assert_call_count(hand_layout, "_on_child_mouse_exited", 1)
+	gut.simulate(hand_layout, 1, .1)
 	assert_call_count(hand_layout, "_reset_positions", 3)
+	assert_almost_eq(gcard.position, position_before_hover, Vector2(0.01, 0.01))
+	assert_almost_eq(gcard.scale, Vector2.ONE, Vector2(0.01, 0.01))
 
 func test_reset_position_on_card_drag():
+	hand_layout.enable_dragging = true
 	for i in 5:
-		var card:GCard = autofree(partial_double(GCard).new())
+		var card:Control = autofree(Control.new())
 		hand_layout.add_child(card)
 	add_child(hand_layout)
 	assert_call_count(hand_layout, "_reset_positions", 1)
-	var gcard:GCard = hand_layout.get_children().front()
+	var gcard:Control = hand_layout.get_children().front()
+	gcard.size = Vector2(100, 100)
+	stub(hand_layout, "_get_global_mouse_position_for_interaction").to_return(gcard.position+Vector2.ONE)
 	var event = InputFactory.mouse_left_button_down(gcard.position, gcard.global_position)
 	var sender = InputSender.new(gcard)
 	sender.send_event(event)
-	assert_eq(gcard.state, GCard.State.DRAGGING)
-	assert_call_count(hand_layout, "_reset_positions", 2)
+	assert_eq(hand_layout._dragging_index, 0)
+	assert_call_count(hand_layout, "_reset_positions", 3)
+	assert_signal_emitted(hand_layout, "card_dragging_started")
+	assert_almost_eq(gcard.scale, hand_layout.dragging_scale, Vector2(0.01, 0.01))
+	assert_almost_eq(gcard.rotation, 0.0, 0.01)
 
 func test_reset_position_on_card_release_drag():
+	hand_layout.enable_dragging = true
 	for i in 5:
-		var card:GCard = autofree(partial_double(GCard).new())
+		var card:Control = autofree(Control.new())
 		hand_layout.add_child(card)
 	add_child(hand_layout)
 	assert_call_count(hand_layout, "_reset_positions", 1)
-	var gcard:GCard = hand_layout.get_children().front()
-	gcard.state = GCard.State.DRAGGING
-	assert_eq(gcard.state, GCard.State.DRAGGING)
-	assert_call_count(hand_layout, "_reset_positions", 2)
-	gcard.state = GCard.State.IDLE
-	assert_eq(gcard.state, GCard.State.IDLE)
-	assert_call_count(hand_layout, "_reset_positions", 3)
+	var gcard:Control = hand_layout.get_children().front()
+	var gcard_rotation := gcard.rotation
+	gcard.size = Vector2(100, 100)
+	stub(hand_layout, "_get_global_mouse_position_for_interaction").to_return(gcard.position+Vector2.ONE)
+	var event = InputFactory.mouse_left_button_down(gcard.position, gcard.global_position)
+	var sender = InputSender.new(gcard)
+	sender.send_event(event)
+	assert_eq(hand_layout._dragging_index, 0)
+	assert_call_count(hand_layout, "_reset_positions", 3) #_reset_positions called because hover_index changed
+	assert_signal_emitted(hand_layout, "card_dragging_started")
+	assert_almost_eq(gcard.rotation, 0.0, 0.01)
+	
+	var event_mouse_button_up = InputFactory.mouse_left_button_up(gcard.position, gcard.global_position)
+	sender.send_event(event_mouse_button_up)
+	assert_eq(hand_layout._dragging_index, -1)
+	assert_signal_emitted(hand_layout, "card_dragging_finished")
+	gut.simulate(hand_layout, 1, .1)
+	assert_almost_eq(gcard.scale, Vector2.ONE, Vector2(0.01, 0.01))
+	assert_almost_eq(gcard.rotation, gcard_rotation, 0.01)
 
 func test_change_parameters_reset_position():
 	for i in 5:
-		var card:GCard = autofree(partial_double(GCard).new())
+		var card:Control = autofree(Control).new()
 		hand_layout.add_child(card)
 	add_child(hand_layout)
+	var number_called := 0
 	assert_call_count(hand_layout, "_reset_positions", 1)
 	
 	hand_layout.dynamic_radius = hand_layout.dynamic_radius
@@ -104,23 +141,32 @@ func test_change_parameters_reset_position():
 	hand_layout.card_size = Vector2(100, 100)
 	assert_call_count(hand_layout, "_reset_positions", 6)
 
-	hand_layout.handle_mouse_hover_animaiton = false # Does not trigger repositioning
+	hand_layout.enable_hover = false # Does not trigger repositioning
 	assert_call_count(hand_layout, "_reset_positions", 6)
 	
 	hand_layout.hovered_index = 4
-	assert_call_count(hand_layout, "_reset_positions", 6)
+	assert_call_count(hand_layout, "_reset_positions", 7)
 	
 	hand_layout.hover_padding = 60
-	assert_call_count(hand_layout, "_reset_positions", 7)
+	assert_call_count(hand_layout, "_reset_positions", 8)
 	
 	hand_layout.animation_time = 0.2  # Does not trigger repositioning
-	assert_call_count(hand_layout, "_reset_positions", 7)
+	assert_call_count(hand_layout, "_reset_positions", 8)
 	
 	hand_layout.animation_ease = Tween.EASE_OUT  # Does not trigger repositioning
-	assert_call_count(hand_layout, "_reset_positions", 7)
+	assert_call_count(hand_layout, "_reset_positions", 8)
 	
 	hand_layout.animation_trans = Tween.TRANS_SINE  # Does not trigger repositioning
-	assert_call_count(hand_layout, "_reset_positions", 7)
+	assert_call_count(hand_layout, "_reset_positions", 8)
 	
 	hand_layout.hover_sound = autofree(AudioStreamPlayer2D.new()) # Does not trigger repositioning
-	assert_call_count(hand_layout, "_reset_positions", 7)
+	assert_call_count(hand_layout, "_reset_positions", 8)
+	
+	hand_layout.enable_dragging = !hand_layout.enable_dragging # Does not trigger repositioning
+	assert_call_count(hand_layout, "_reset_positions", 8)
+
+	hand_layout.dragging_scale = Vector2(500, 500) # Does not trigger repositioning
+	assert_call_count(hand_layout, "_reset_positions", 8)
+
+	hand_layout.hover_relative_position = Vector2(100, 100)
+	assert_call_count(hand_layout, "_reset_positions", 9)
