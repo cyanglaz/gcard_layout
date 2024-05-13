@@ -32,7 +32,7 @@ enable_dragging = true
 layout_mode = 0
 offset_left = -165.333
 offset_top = 7.88531
-offset_right = -85.3353
+offset_right = -85.3357
 offset_bottom = 119.885
 rotation = -0.125664
 
@@ -40,7 +40,7 @@ rotation = -0.125664
 layout_mode = 0
 offset_left = -102.791
 offset_top = 1.97327
-offset_right = -22.7866
+offset_right = -22.7856
 offset_bottom = 113.973
 rotation = -0.0628319
 

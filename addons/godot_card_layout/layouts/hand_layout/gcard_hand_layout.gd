@@ -1,5 +1,5 @@
 @tool
-@icon("res://addons/gcard_layout/resources/icons/hand_layout_icon.svg")
+@icon("res://addons/godot_card_layout/resources/icons/hand_layout_icon.svg")
 ## A node to help layout [Control] nodes in a hand layout.[br][br]
 ## Simply add [Control]s as children to form the layout. Adding other nodes as children cause undefined behavior.
 ## To make the layout more customized, create a custom control scene and use [GCardHandLayoutService] as a helper.
