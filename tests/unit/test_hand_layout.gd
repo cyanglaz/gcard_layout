@@ -69,6 +69,7 @@ func test_reset_position_on_card_unhover():
 	assert_call_count(hand_layout, "_reset_positions", 3)
 	assert_almost_eq(gcard.position, position_before_hover, Vector2(0.01, 0.01))
 	assert_almost_eq(gcard.scale, Vector2.ONE, Vector2(0.01, 0.01))
+	assert_signal_emitted(hand_layout, "cards_unhovered")
 
 func test_reset_position_on_card_drag():
 	hand_layout.enable_dragging = true

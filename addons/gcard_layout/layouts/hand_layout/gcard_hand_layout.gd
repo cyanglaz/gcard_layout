@@ -8,6 +8,8 @@ extends Control
 
 ## Emits when a card is hovered.
 signal card_hoverd(card:Control, index:int)
+## Emits when all the cards are unhovered.
+signal cards_unhovered()
 ## Emits when a card starts being dragged.
 signal card_dragging_started(card:Control, index:int)
 ## Emits when a dragged card is released.
@@ -208,7 +210,7 @@ func _set_enable_hover(val:bool):
 
 func _set_hovered_index(val:int):
 	hovered_index = val
-	if hovered_index >=  get_child_count():
+	if hovered_index >= get_child_count():
 		return
 	_reset_positions_if_in_tree()
 	var card:Control = null
@@ -216,7 +218,10 @@ func _set_hovered_index(val:int):
 		if hover_sound:
 			hover_sound.play()
 		card = get_children()[hovered_index]
-	card_hoverd.emit(card, hovered_index)
+	if hovered_index >= 0:
+		card_hoverd.emit(card, hovered_index)
+	else:
+		cards_unhovered.emit()
 
 func _set_hover_padding(val:float):
 	hover_padding = val
