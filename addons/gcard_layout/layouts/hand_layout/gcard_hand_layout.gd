@@ -1,31 +1,60 @@
 @tool
 @icon("res://addons/gcard_layout/resources/icons/hand_layout_icon.svg")
+## A node to help layout [GCard] in a hand layout.[br][br]
+## Simply add [GCard]s as children to form the layout. Adding other nodes as children cause undefined behavior.
+## To make the layout more customized, create a custom control scene and use [GCardHandLayoutService] as a helper.
 class_name GCardHandLayout
 extends Control
 
+## Emits when a card is hovered.
 signal card_hoverd(card:GCard, index:int)
+## Emits when a card is unhovered.
 signal card_unhovered(card:GCard, index:int)
+## Emits when a card starts being dragged.
 signal card_dragging_started(card:GCard, index:int)
+## Emits when a dragged card is released.
 signal card_dragging_finished(card:GCard, index:int)
 
 @export_group("idle layout")
+## Set radius dynamically based on the number of cards. ([member radius] = [member dynamic_radius_factor] * number_of_cards).[br][br]
+## If [b]true[/b], [member radius] is ignored.
 @export var dynamic_radius := true: set = _set_dynamic_radius
+## If [member dynamic_radius] is [br]true[/br], this value is used to compute the radius to create the curve based on the number of cards.[br]
+## A bigger value creates a flatter curve and more seperation between the cards.[br][br]
+## If [member dynamic_radius] is [br]false[/br], this is ignored.
 @export var dynamic_radius_factor:float = 100.0: set = _set_dynamic_radius_factor
-@export var radius := 1000: set = _set_radius
+## A fixed radius used to create the curve.[br][br]
+## If [member dynamic_radius] is [b]true[/b], this is ignored.
+@export var radius := 1000.0: set = _set_radius
+## Determines how much of a circle to use for the curve.[br][br]
+## A value of [b]0.0[/b] creates a point, and a value of [b]1.0[/b] creates a full circle.
+## Usually a value between [b]0.1[/b] and [b]0.03[/b] is suitable for a card hand layout.
 @export var circle_percentage:float = 0.05: set = _set_circle_percentage
+## The size of the card.[br][br]
+## This has to match the size of the child.
 @export var card_size:Vector2: set = _set_card_size
 
 @export_group("hover")
+## Whether this layout node should handle hover animation.[br][br]
 @export var handle_mouse_hover_animaiton := true
+## The card index that is currently being hovered.[br][br]
+## This is useful when testing layout in the inspector.[br][br]
 @export var hovered_index := -1: set = _set_hovered_index
+## How much pixels do un-hovered card move away from the hovered card.[br][br]
+## The cards to the left of the hovered card move to the left, the cards to the right move to the right.[br][br]
 @export var hover_padding := 40.0: set = _set_hover_padding
 
-@export_group("animation")
+@export_group("animation") 
+## The duration of all the animation related to layout, e.g. hover, reset position. [br][br]
+## When value is set to [br]0.0[/br], animations are disabled.
 @export var animation_time := 0.1: set = _set_animation_time
+## The ease used for the animations.
 @export var animation_ease := Tween.EASE_IN
+## The trans used for the animations.
 @export var animation_trans := Tween.TRANS_QUAD
 
 @export_group("sounds")
+## Plays when a card is hovered.
 @export var hover_sound:AudioStreamPlayer2D
 
 var gcard_hand_layout_service := GCardHandLayoutService.new()

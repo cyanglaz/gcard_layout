@@ -12,7 +12,9 @@ enum State {
 signal state_updated(card:GCard, old_state:State, new_state:State)
 
 @export_group("appearance")
+## The scale when card is hovered.
 @export var hovered_scale := Vector2(1.1, 1.1)
+## The scale when card is being dragged.
 @export var dragging_scale := Vector2(1.1, 1.1)
 
 var animation_time := 0.1

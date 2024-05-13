@@ -1,3 +1,4 @@
+## Represents layout information for a card.
 class_name GCardLayoutInfo
 extends RefCounted
 
