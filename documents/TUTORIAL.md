@@ -16,7 +16,7 @@ If you have not installed the plugin yet, please follow the [Installation Guide]
 <img src="../resources/imgs/tutorial/customize_card.gif"><br>
 <img src="../resources/imgs/tutorial/set_card_size.gif"><br>
 
-4. **Important**: For the layout to work, the x value of the pivot offset of the card node must be set to half of the card's width. In this example, we set the pivot offset to **Vector2(40, 0)**.
+4. **Important**: For the layout to work properly, the x value of the pivot offset of the card node must be set to half of the card's width. In this example, we set the pivot offset to **Vector2(40, 0)**.
 
 <img src="../resources/imgs/tutorial/set_pivot.gif"><br>
 
