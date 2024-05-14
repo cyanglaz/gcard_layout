@@ -30,9 +30,6 @@ signal card_dragging_finished(card:Control, index:int)
 ## A value of [b]0.0[/b] creates a point, and a value of [b]1.0[/b] creates a full circle.
 ## Usually a value between [b]0.1[/b] and [b]0.03[/b] is suitable for a card hand layout.
 @export var circle_percentage:float = 0.05: set = _set_circle_percentage
-## The size of the card.[br][br]
-## This has to match the size of the child.
-@export var card_size:Vector2: set = _set_card_size
 
 @export_group("hover")
 ## Whether this layout node should handle hover animation.[br][br]
@@ -129,7 +126,6 @@ func _reset_positions(reculculate_curve:bool = false, animated:bool = true):
 	gcard_hand_layout_service.dynamic_radius_factor = dynamic_radius_factor
 	gcard_hand_layout_service.radius = radius
 	gcard_hand_layout_service.circle_percentage = circle_percentage
-	gcard_hand_layout_service.card_size = card_size
 	gcard_hand_layout_service.hover_padding = hover_padding
 	gcard_hand_layout_service.hovered_index = hovered_index
 	gcard_hand_layout_service.hover_relative_position = hover_relative_position
@@ -203,10 +199,6 @@ func _set_radius(val:float):
 	
 func _set_circle_percentage(val:float):
 	circle_percentage = val
-	_reset_positions_if_in_tree()
-	
-func _set_card_size(val:Vector2):
-	card_size = val
 	_reset_positions_if_in_tree()
 
 func _set_enable_hover(val:bool):

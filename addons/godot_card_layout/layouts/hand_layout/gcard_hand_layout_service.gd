@@ -26,8 +26,6 @@ var radius := 1000.0: set = _set_radius
 ## Usually a value between [b]0.1[/b] and [b]0.03[/b] is suitable for a card hand layout.
 ## Update this value will cause [method recalculate_layouts] to be called when calling [method get_card_layouts].
 var circle_percentage:float = 0.05: set = _set_circle_percentage
-## The size of the card.[br][br]
-var card_size:Vector2
 ## The card index that is currently being hovered.[br][br]
 ## Unhovered card will move left or right for [member hover_padding] pixels.[br][br]
 var hovered_index := -1
@@ -86,7 +84,6 @@ func sample_curve() -> Array[GCardLayoutInfo]:
 	for i in number_of_cards:
 		var layout_info := GCardLayoutInfo.new()
 		layout_info.copy(_base_layout_infos[i])
-		layout_info.position.x -= card_size.x/2
 		if i == hovered_index:
 			layout_info.position += hover_relative_position
 			layout_info.rotation = 0

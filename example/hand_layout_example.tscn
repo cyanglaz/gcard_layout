@@ -21,35 +21,37 @@ script = ExtResource("1_u2yyo")
 
 [node name="GCard2" parent="GCardHandLayout" instance=ExtResource("2_hudwu")]
 layout_mode = 0
-offset_left = -78.2172
+offset_left = -328.217
 offset_top = 6.15582
-offset_right = 1.78004
+offset_right = -248.22
 offset_bottom = 118.156
 rotation = -0.15708
 
 [node name="GCard3" parent="GCardHandLayout" instance=ExtResource("2_hudwu")]
 layout_mode = 0
-offset_left = -39.2295
+offset_left = -289.23
 offset_top = 1.54132
-offset_right = 40.7759
+offset_right = -209.224
 offset_bottom = 113.541
 rotation = -0.0785398
 
 [node name="GCard4" parent="GCardHandLayout" instance=ExtResource("2_hudwu")]
 layout_mode = 0
+offset_left = -250.0
+offset_right = -170.0
 
 [node name="GCard5" parent="GCardHandLayout" instance=ExtResource("2_hudwu")]
 layout_mode = 0
-offset_left = 39.2295
+offset_left = -210.77
 offset_top = 1.54132
-offset_right = 119.23
+offset_right = -130.77
 offset_bottom = 113.541
 rotation = 0.0785398
 
 [node name="GCard6" parent="GCardHandLayout" instance=ExtResource("2_hudwu")]
 layout_mode = 0
-offset_left = 78.2172
+offset_left = -171.783
 offset_top = 6.15582
-offset_right = 158.217
+offset_right = -91.783
 offset_bottom = 118.156
 rotation = 0.15708

@@ -117,56 +117,117 @@ func test_reset_position_on_card_release_drag():
 	assert_almost_eq(gcard.scale, Vector2.ONE, Vector2(0.01, 0.01))
 	assert_almost_eq(gcard.rotation, gcard_rotation, 0.01)
 
-func test_change_parameters_reset_position():
-	for i in 5:
-		var card:Control = autofree(Control).new()
-		hand_layout.add_child(card)
+func test_change_dynamic_radius_reset_position():
+	var card:Control = autofree(Control).new()
+	hand_layout.add_child(card)
 	add_child(hand_layout)
 	assert_call_count(hand_layout, "_reset_positions", 1)
-	
 	hand_layout.dynamic_radius = hand_layout.dynamic_radius
 	assert_call_count(hand_layout, "_reset_positions", 1)
 	hand_layout.dynamic_radius = !hand_layout.dynamic_radius
 	assert_call_count(hand_layout, "_reset_positions", 2)
-	
+
+func test_change_dynamic_radius_ractor_reset_position():
+	var card:Control = autofree(Control).new()
+	hand_layout.add_child(card)
+	add_child(hand_layout)
+	assert_call_count(hand_layout, "_reset_positions", 1)
 	hand_layout.dynamic_radius_factor = 10000
-	assert_call_count(hand_layout, "_reset_positions", 3)
-	
+	assert_call_count(hand_layout, "_reset_positions", 2)
+
+func test_change_radius_reset_position():
+	hand_layout.dynamic_radius = !hand_layout.dynamic_radius
+	var card:Control = autofree(Control).new()
+	hand_layout.add_child(card)
+	add_child(hand_layout)
+	assert_call_count(hand_layout, "_reset_positions", 1)
 	hand_layout.radius = 100000
-	assert_call_count(hand_layout, "_reset_positions", 4)
-	
+	assert_call_count(hand_layout, "_reset_positions", 2)
+
+func test_change_circle_percentarge_reset_position():
+	var card:Control = autofree(Control).new()
+	hand_layout.add_child(card)
+	add_child(hand_layout)
+	assert_call_count(hand_layout, "_reset_positions", 1)
 	hand_layout.circle_percentage = 1.0
-	assert_call_count(hand_layout, "_reset_positions", 5)
-	
-	hand_layout.card_size = Vector2(100, 100)
-	assert_call_count(hand_layout, "_reset_positions", 6)
+	assert_call_count(hand_layout, "_reset_positions", 2)
 
+func test_change_enable_hover_reset_position():
+	var card:Control = autofree(Control).new()
+	hand_layout.add_child(card)
+	add_child(hand_layout)
+	assert_call_count(hand_layout, "_reset_positions", 1)
 	hand_layout.enable_hover = false # Does not trigger repositioning
-	assert_call_count(hand_layout, "_reset_positions", 6)
+	assert_call_count(hand_layout, "_reset_positions", 1)
 	
-	hand_layout.hovered_index = 4
-	assert_call_count(hand_layout, "_reset_positions", 7)
-	
+func test_change_hovered_index_reset_position():
+	var card:Control = autofree(Control).new()
+	hand_layout.add_child(card)	
+	add_child(hand_layout)
+	assert_call_count(hand_layout, "_reset_positions", 1)
+	hand_layout.hovered_index = 0
+	assert_call_count(hand_layout, "_reset_positions", 2)
+
+func test_change_hovered_padding_reset_position():
+	var card:Control = autofree(Control).new()
+	hand_layout.add_child(card)	
+	add_child(hand_layout)
+	assert_call_count(hand_layout, "_reset_positions", 1)	
 	hand_layout.hover_padding = 60
-	assert_call_count(hand_layout, "_reset_positions", 8)
-	
+	assert_call_count(hand_layout, "_reset_positions", 2)
+
+func test_change_animation_time_DONOT_reset_position():
+	var card:Control = autofree(Control).new()
+	hand_layout.add_child(card)	
+	add_child(hand_layout)
+	assert_call_count(hand_layout, "_reset_positions", 1)	
 	hand_layout.animation_time = 0.2  # Does not trigger repositioning
-	assert_call_count(hand_layout, "_reset_positions", 8)
-	
+	assert_call_count(hand_layout, "_reset_positions", 1)
+
+func test_change_animation_ease_DONOT_reset_position():
+	var card:Control = autofree(Control).new()
+	hand_layout.add_child(card)	
+	add_child(hand_layout)
+	assert_call_count(hand_layout, "_reset_positions", 1)	
 	hand_layout.animation_ease = Tween.EASE_OUT  # Does not trigger repositioning
-	assert_call_count(hand_layout, "_reset_positions", 8)
-	
+	assert_call_count(hand_layout, "_reset_positions", 1)
+
+func test_change_animation_trans_DONOT_reset_position():
+	var card:Control = autofree(Control).new()
+	hand_layout.add_child(card)	
+	add_child(hand_layout)
+	assert_call_count(hand_layout, "_reset_positions", 1)	
 	hand_layout.animation_trans = Tween.TRANS_SINE  # Does not trigger repositioning
-	assert_call_count(hand_layout, "_reset_positions", 8)
-	
+	assert_call_count(hand_layout, "_reset_positions", 1)
+
+func test_change_hover_sound_DONOT_reset_position():
+	var card:Control = autofree(Control).new()
+	hand_layout.add_child(card)	
+	add_child(hand_layout)
+	assert_call_count(hand_layout, "_reset_positions", 1)	
 	hand_layout.hover_sound = autofree(AudioStreamPlayer2D.new()) # Does not trigger repositioning
-	assert_call_count(hand_layout, "_reset_positions", 8)
-	
+	assert_call_count(hand_layout, "_reset_positions", 1)
+
+func test_change_enable_dragging_DONOT_reset_position():
+	var card:Control = autofree(Control).new()
+	hand_layout.add_child(card)	
+	add_child(hand_layout)
+	assert_call_count(hand_layout, "_reset_positions", 1)	
 	hand_layout.enable_dragging = !hand_layout.enable_dragging # Does not trigger repositioning
-	assert_call_count(hand_layout, "_reset_positions", 8)
-
+	assert_call_count(hand_layout, "_reset_positions", 1)
+#
+func test_change_dragging_scale_DONOT_reset_position():
+	var card:Control = autofree(Control).new()
+	hand_layout.add_child(card)	
+	add_child(hand_layout)
+	assert_call_count(hand_layout, "_reset_positions", 1)	
 	hand_layout.dragging_scale = Vector2(500, 500) # Does not trigger repositioning
-	assert_call_count(hand_layout, "_reset_positions", 8)
+	assert_call_count(hand_layout, "_reset_positions", 1)
 
+func test_change_hover_relative_position_reset_position():
+	var card:Control = autofree(Control).new()
+	hand_layout.add_child(card)	
+	add_child(hand_layout)
+	assert_call_count(hand_layout, "_reset_positions", 1)	
 	hand_layout.hover_relative_position = Vector2(100, 100)
-	assert_call_count(hand_layout, "_reset_positions", 9)
+	assert_call_count(hand_layout, "_reset_positions", 2)
