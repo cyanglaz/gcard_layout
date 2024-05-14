@@ -111,7 +111,7 @@ func test_reset_position_on_card_release_drag():
 	
 	var event_mouse_button_up = InputFactory.mouse_left_button_up(gcard.position, gcard.global_position)
 	sender.send_event(event_mouse_button_up)
-	assert_eq(hand_layout._dragging_index, -1)
+	assert_eq(hand_layout._dragging_index, -100)
 	assert_signal_emitted(hand_layout, "card_dragging_finished")
 	gut.simulate(hand_layout, 1, .1)
 	assert_almost_eq(gcard.scale, Vector2.ONE, Vector2(0.01, 0.01))

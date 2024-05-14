@@ -50,8 +50,11 @@ signal card_dragging_finished(card:Control, index:int)
 @export var hover_relative_position := Vector2(0, -20): set = _set_hover_relative_position
 
 @export_group("dragging")
+## Enable dragging and drop the cards.(Beta)[br]
+## @experimental
 @export var enable_dragging := false: set = _set_enable_dragging
-## The scale of the card is being dragged.
+## The scale of the card is being dragged.[br][br]
+## Ignored when [member enable_dragging] is [b]false[/b]
 @export var dragging_scale := Vector2(1.1, 1.1)
 
 @export_group("animation") 
@@ -70,24 +73,24 @@ signal card_dragging_finished(card:Control, index:int)
 var gcard_hand_layout_service := GCardHandLayoutService.new()
 var _reset_position_tween:Tween
 var _mouse_in:bool = false
-var _dragging_index:int = -1
+var _dragging_card:Control
+var _dragging_index:int = -100
 var _dragging_mouse_position:Vector2
 
 func _ready():
-	_dragging_index = -1
+	_dragging_index = -100
 	child_order_changed.connect(_on_child_order_changed)
 	_setup_card_signals()
 	if get_child_count() > 0:
 		_reset_positions_if_in_tree(false, false)
 
 func _process(delta):
-	if !enable_hover && _dragging_index < 0:
+	if !enable_hover && !_dragging_card:
 		return
 	var old_hovered_index = hovered_index
-	if _dragging_index >= 0:
+	if _dragging_card:
 		assert(enable_dragging)
-		var dragged_card := get_children()[_dragging_index] as Control
-		dragged_card.global_position = _get_global_mouse_position_for_interaction() - _dragging_mouse_position
+		_dragging_card.global_position = _get_global_mouse_position_for_interaction() - _dragging_mouse_position
 	elif _mouse_in:
 		assert(enable_hover)
 		var mouse_position = _get_global_mouse_position_for_interaction()
@@ -119,7 +122,7 @@ func _reset_positions_if_in_tree(reculculate_curve:bool = false, animated:bool =
 
 func _reset_positions(reculculate_curve:bool = false, animated:bool = true):
 	var number_of_cards := get_child_count()
-	if _dragging_index >= 0:
+	if _dragging_card && _dragging_card.get_parent() == self:
 		number_of_cards -= 1
 	gcard_hand_layout_service.number_of_cards = number_of_cards
 	gcard_hand_layout_service.dynamic_radius = dynamic_radius
@@ -139,16 +142,18 @@ func _reset_positions(reculculate_curve:bool = false, animated:bool = true):
 		_reset_position_tween = create_tween()
 	for i in get_child_count():
 		var card:Control = get_children()[i]
-		var layout_info:GCardLayoutInfo = layout_infos[position_index]
-		var target_position := layout_info.position
-		var target_rotation := layout_info.rotation
 		var target_scale = Vector2.ONE
+		var target_position:Vector2
+		var target_rotation := 0.0
 		if i == _dragging_index:
-			target_rotation = 0
 			target_scale = dragging_scale
-		elif i == hovered_index:
-			target_rotation = 0
-			target_scale = hovered_scale
+		else:
+			var layout_info:GCardLayoutInfo = layout_infos[position_index]
+			target_position = layout_info.position
+			target_rotation = layout_info.rotation
+			if i == hovered_index:
+				target_rotation = 0
+				target_scale = hovered_scale
 		if !should_animate:
 			if i != _dragging_index:
 				card.position = target_position
@@ -171,7 +176,7 @@ func _setup_card_signals():
 			continue
 		card.mouse_entered.connect(_on_child_mouse_entered)
 		card.mouse_exited.connect(_on_child_mouse_exited)
-		card.gui_input.connect(_on_child_gui_input)
+		card.gui_input.connect(_on_child_gui_input.bind(card))
 
 func _find_card_index_with_point(global_point:Vector2) -> int:
 	var intercepting_card:Control
@@ -247,12 +252,12 @@ func _get_global_mouse_position_for_interaction():
 	return get_global_mouse_position()
 
 func _on_child_mouse_entered():
-	if _dragging_index >= 0:
+	if _dragging_card:
 		return
 	_mouse_in = true
 
 func _on_child_mouse_exited():
-	if _dragging_index >= 0:
+	if _dragging_card:
 		return
 	_mouse_in = false
 
@@ -260,24 +265,26 @@ func _on_child_order_changed():
 	_setup_card_signals()
 	_reset_positions_if_in_tree()
 
-func _on_child_gui_input(event:InputEvent):
+func _on_child_gui_input(event:InputEvent, card:Control):
 	if !enable_dragging:
 		return
 	if event is InputEventMouseButton:
 		var mouse_button_event = event as InputEventMouseButton
+		if card.get_parent() != self:
+			_dragging_index == -1
+		else:
+			_dragging_index = get_children().find(card)
 		if mouse_button_event.pressed && mouse_button_event.button_index == MOUSE_BUTTON_LEFT:
-			_dragging_index = _find_card_index_with_point(_get_global_mouse_position_for_interaction())
-			assert(_dragging_index >= 0)
-			hovered_index = -1 #Set hover index without trigger relayout
-			var card := get_children()[_dragging_index] as Control
+			_dragging_card = card
 			_dragging_mouse_position = card.get_local_mouse_position()
-			card.z_index = 1
-			card_dragging_started.emit(get_children()[_dragging_index], _dragging_index)
+			_dragging_card.z_index = 1
+			hovered_index = -1 #Set hover index without trigger relayout
+			card_dragging_started.emit(_dragging_card, _dragging_index)
 			_reset_positions_if_in_tree()
 		elif !mouse_button_event.pressed && mouse_button_event.button_index == MOUSE_BUTTON_LEFT:
-			if _dragging_index >= 0:
-				var card := get_children()[_dragging_index] as Control
-				card.z_index = 0
-				card_dragging_finished.emit(get_children()[_dragging_index], _dragging_index)
-				_dragging_index = -1
-				_reset_positions_if_in_tree()
+			assert(_dragging_card == card)
+			_dragging_card = null
+			card.z_index = 0
+			card_dragging_finished.emit(card, _dragging_index)
+			_dragging_index = -100
+			_reset_positions_if_in_tree()
