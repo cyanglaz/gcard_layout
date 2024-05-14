@@ -2,6 +2,7 @@
 @icon("res://addons/godot_card_layout/resources/icons/hand_layout_icon.svg")
 ## A node to help layout [Control] nodes in a hand layout.[br][br]
 ## Simply add [Control]s as children to form the layout. Adding other nodes as children cause undefined behavior.
+## [b]Important[/b]: Set the x value of pivot offset of the card object to card object's size/2 to correctly align the cards
 ## To make the layout more customized, create a custom control scene and use [GCardHandLayoutService] as a helper.
 class_name GCardHandLayout
 extends Control
@@ -47,7 +48,9 @@ signal card_dragging_finished(card:Control, index:int)
 @export var hover_relative_position := Vector2(0, -20): set = _set_hover_relative_position
 
 @export_group("dragging")
-## Enable dragging and drop the cards.(Beta)[br]
+## Enable dragging and drop the cards.(Beta)[br][br]
+##
+## [b]false[/b] by default.
 ## @experimental
 @export var enable_dragging := false: set = _set_enable_dragging
 ## The scale of the card is being dragged.[br][br]
@@ -77,12 +80,12 @@ var _dragging_mouse_position:Vector2
 func _ready():
 	_dragging_index = -100
 	child_order_changed.connect(_on_child_order_changed)
-	_setup_card_signals()
+	_setup_cards()
 	if get_child_count() > 0:
 		_reset_positions_if_in_tree(false, false)
 
 func _process(delta):
-	if !enable_hover && !_dragging_card:
+	if Engine.is_editor_hint() || !enable_hover && !_dragging_card:
 		return
 	var old_hovered_index = hovered_index
 	if _dragging_card:
@@ -106,7 +109,7 @@ func _validate_property(property):
 		property.usage = PROPERTY_USAGE_NO_EDITOR
 	if property.name in ["dynamic_radius_factor"] && !dynamic_radius:
 		property.usage = PROPERTY_USAGE_NO_EDITOR
-	if property.name in ["hovered_index", "hover_padding", "hovered_scale"] && !enable_hover:
+	if property.name in ["hovered_index", "hover_padding", "hovered_scale", "hover_relative_position"] && !enable_hover:
 		property.usage = PROPERTY_USAGE_NO_EDITOR
 	if property.name in ["dragging_scale"] && !enable_dragging:
 		property.usage = PROPERTY_USAGE_NO_EDITOR
@@ -165,7 +168,7 @@ func _reset_positions(reculculate_curve:bool = false, animated:bool = true):
 	if should_animate:
 		_reset_position_tween.play()
 
-func _setup_card_signals():
+func _setup_cards():
 	for child in get_children():
 		var card = child as Control
 		if card.mouse_entered.is_connected(_on_child_mouse_entered):
@@ -254,7 +257,7 @@ func _on_child_mouse_exited():
 	_mouse_in = false
 
 func _on_child_order_changed():
-	_setup_card_signals()
+	_setup_cards()
 	_reset_positions_if_in_tree()
 
 func _on_child_gui_input(event:InputEvent, card:Control):
