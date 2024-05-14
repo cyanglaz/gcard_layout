@@ -11,12 +11,12 @@ If you have not installed the plugin yet, please follow the [Installation Guide]
 
 <img src="../resources/imgs/tutorial/add_card_as_child.gif"><br>
 
-3. Customize the card. In this Quick Start Guide, we added a simple texture to represent the card. Set the size to be **Vector2(80, 100)**.
+3. Customize the card. In this Quick Start Guide, we added a simple texture to represent the card. Set the size to **Vector2(80, 100)**.
 
 <img src="../resources/imgs/tutorial/customize_card.gif"><br>
 <img src="../resources/imgs/tutorial/set_card_size.gif"><br>
 
-4. **Important**: For the layout to work, the x value of **pivot offset** of the card node must be set to be the half of the card's width. In this example, we set the **pivot offset** to be **Vector2(40, 0)**.
+4. **Important**: For the layout to work, the x value of the pivot offset of the card node must be set to half of the card's width. In this example, we set the pivot offset to **Vector2(40, 0)**.
 
 <img src="../resources/imgs/tutorial/set_pivot.gif"><br>
 
@@ -24,4 +24,4 @@ If you have not installed the plugin yet, please follow the [Installation Guide]
 
 <img src="../resources/imgs/tutorial/duplicate_cards.gif"><br>
 
-Now that the basic hand layout is set up. Please feel free to play with the parameters in the `GCardHandLayout` to configure the layout as you see fit.
+Now that the basic hand layout is set up, feel free to adjust the parameters in the `GCardHandLayout` to configure the layout as you see fit.

@@ -8,4 +8,4 @@
 For detailed instructions on installing a Godot plugin, refer to the official [Godot Plugins documentation](https://docs.godotengine.org/en/stable/tutorials/plugins/editor/installing_plugins.html). 
 
 ### Next Step
-Follow our [TUTORIAL](./TUTORIAL.md) guide to get started.
+Follow our [TUTORIAL](./TUTORIAL.md) to get started.
