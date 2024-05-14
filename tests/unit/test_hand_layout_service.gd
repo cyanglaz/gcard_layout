@@ -58,13 +58,14 @@ func test_hover_position():
 	hand_layout_service.dynamic_radius = false
 	hand_layout_service.radius = radius
 	hand_layout_service.hovered_index = 0
+	hand_layout_service.hover_relative_position = Vector2(0, -20)
 	var total_angle := TAU*hand_layout_service.circle_percentage
 	var initial_angle := -total_angle/2.0
 	var step := total_angle/(hand_layout_service.number_of_cards-1)
 	var layouts := hand_layout_service.get_card_layouts()
 	# Hovered card goes up.
 	var layout1:GCardLayoutInfo = layouts[0]
-	assert_almost_eq(layout1.position, Vector2(radius*cos(initial_angle-PI/2), radius*sin(initial_angle-PI/2)) + Vector2.DOWN * radius + Vector2.UP*hand_layout_service.card_size.y * 0.2  , Vector2(0.0001, 0.0001))
+	assert_almost_eq(layout1.position, Vector2(radius*cos(initial_angle-PI/2), radius*sin(initial_angle-PI/2)) + Vector2.DOWN * radius + hand_layout_service.hover_relative_position, Vector2(0.0001, 0.0001))
 	assert_almost_eq(layout1.rotation, 0.0, 0.01)
 	# Unhovered card got pushed.
 	var layout2:GCardLayoutInfo = layouts[1]
@@ -80,7 +81,6 @@ func test_hover_position():
 	layouts = hand_layout_service.get_card_layouts()
 	# Hovered card goes up.
 	layout2 = layouts[1]
-	assert_almost_eq(layout2.position, Vector2(0, 0) + Vector2.UP*hand_layout_service.card_size.y * 0.2, Vector2(0.0001, 0.0001))
 	assert_almost_eq(layout2.rotation, 0.0, 0.01)
 	# Unhovered card got pushed.
 	layout1 = layouts[0]
@@ -113,13 +113,11 @@ func test_recalculate_positions():
 
 func test_do_not_recalculate_positions():
 	hand_layout_service.number_of_cards = 1
-	hand_layout_service.card_size = Vector2(20, 20)
 	hand_layout_service.hovered_index = 0
 	hand_layout_service.hover_padding = 15
 	var layouts := hand_layout_service.get_card_layouts()
 	assert_call_count(hand_layout_service, "recalculate_layouts", 1)
 	
-	hand_layout_service.card_size = Vector2(25, 25)
 	hand_layout_service.hovered_index = 0
 	hand_layout_service.hover_padding = 20
 	layouts = hand_layout_service.get_card_layouts()

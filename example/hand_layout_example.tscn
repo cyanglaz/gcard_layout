@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://c5yfvdlqr8giu"]
 
-[ext_resource type="Script" path="res://addons/gcard_layout/layouts/hand_layout/gcard_hand_layout.gd" id="1_u2yyo"]
+[ext_resource type="Script" path="res://addons/godot_card_layout/layouts/hand_layout/gcard_hand_layout.gd" id="1_u2yyo"]
 [ext_resource type="PackedScene" uid="uid://c871odxcp2l05" path="res://example/card_example.tscn" id="2_hudwu"]
 
 [node name="Control" type="Control"]
@@ -12,47 +12,46 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="GCardHandLayout" type="Control" parent="."]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-grow_horizontal = 2
-grow_vertical = 2
+anchors_preset = 0
+offset_left = 281.0
+offset_top = 182.0
+offset_right = 321.0
+offset_bottom = 222.0
 script = ExtResource("1_u2yyo")
-dynamic_radius_factor = 200.0
-circle_percentage = 0.04
-card_size = Vector2(80, 100)
 
 [node name="GCard2" parent="GCardHandLayout" instance=ExtResource("2_hudwu")]
-offset_left = -165.333
-offset_top = 7.88531
-offset_right = -85.3343
-offset_bottom = 119.885
-rotation = -0.125664
+layout_mode = 0
+offset_left = -328.217
+offset_top = 6.15582
+offset_right = -248.22
+offset_bottom = 118.156
+rotation = -0.15708
 
 [node name="GCard3" parent="GCardHandLayout" instance=ExtResource("2_hudwu")]
-offset_left = -102.791
-offset_top = 1.97327
-offset_right = -22.7891
-offset_bottom = 113.973
-rotation = -0.0628319
+layout_mode = 0
+offset_left = -289.23
+offset_top = 1.54132
+offset_right = -209.224
+offset_bottom = 113.541
+rotation = -0.0785398
 
 [node name="GCard4" parent="GCardHandLayout" instance=ExtResource("2_hudwu")]
-offset_left = -40.0
-offset_right = 40.0
+layout_mode = 0
+offset_left = -250.0
+offset_right = -170.0
 
 [node name="GCard5" parent="GCardHandLayout" instance=ExtResource("2_hudwu")]
-offset_left = 22.7905
-offset_top = 1.97327
-offset_right = 102.791
-offset_bottom = 113.973
-rotation = 0.0628319
+layout_mode = 0
+offset_left = -210.77
+offset_top = 1.54132
+offset_right = -130.77
+offset_bottom = 113.541
+rotation = 0.0785398
 
 [node name="GCard6" parent="GCardHandLayout" instance=ExtResource("2_hudwu")]
-offset_left = 85.3332
-offset_top = 7.88531
-offset_right = 165.333
-offset_bottom = 119.885
-rotation = 0.125664
+layout_mode = 0
+offset_left = -171.783
+offset_top = 6.15582
+offset_right = -91.783
+offset_bottom = 118.156
+rotation = 0.15708

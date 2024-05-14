@@ -20,20 +20,20 @@ var dynamic_radius_factor:float = 100.0: set = _set_dynamic_radius_factor
 ## A fixed radius used to create the curve.[br][br]
 ## If [member dynamic_radius] is [b]true[/b], this is ignored.
 ## Update this value will cause [method recalculate_layouts] to be called when calling [method get_card_layouts].
-var radius := 1000: set = _set_radius
+var radius := 1000.0: set = _set_radius
 ## Determines how much of a circle to use for the curve.[br][br]
 ## A value of [b]0.0[/b] creates a point, and a value of [b]1.0[/b] creates a full circle.
 ## Usually a value between [b]0.1[/b] and [b]0.03[/b] is suitable for a card hand layout.
 ## Update this value will cause [method recalculate_layouts] to be called when calling [method get_card_layouts].
 var circle_percentage:float = 0.05: set = _set_circle_percentage
-## The size of the card.[br][br]
-var card_size:Vector2
 ## The card index that is currently being hovered.[br][br]
 ## Unhovered card will move left or right for [member hover_padding] pixels.[br][br]
 var hovered_index := -1
 ## How much pixels do un-hovered card move away from the hovered card.[br][br]
 ## The cards to the left of the hovered card move to the left, the cards to the right move to the right.[br][br]
 var hover_padding := 15.0
+## The relative position of the card when being hovered.
+var hover_relative_position:Vector2
 
 var _need_recalculate_curve:bool = true
 var _base_layout_infos:Array[GCardLayoutInfo] = []
@@ -84,10 +84,8 @@ func sample_curve() -> Array[GCardLayoutInfo]:
 	for i in number_of_cards:
 		var layout_info := GCardLayoutInfo.new()
 		layout_info.copy(_base_layout_infos[i])
-		layout_info.position.x -= card_size.x/2
 		if i == hovered_index:
-			# TODO: make hover position customized
-			layout_info.position.y -= card_size.y * 0.2 
+			layout_info.position += hover_relative_position
 			layout_info.rotation = 0
 		elif hovered_index != -1:
 			var i_diff := i - hovered_index
