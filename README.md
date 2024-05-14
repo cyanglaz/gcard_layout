@@ -13,5 +13,8 @@ A godot plugin to provide lightweight solution for card game layouts. This plugi
 ## Installation
 See [Installation Guide](./documents/INSTALLATION.md).
 
-## Quick Start
-1. 
+## Tutorial
+See [Tutorial](./documents/TUTORIAL.md)
+
+## License
+This plugin is under MIT license, the license file can be found [here](./addons/godot_card_layout/LICENSE.md).
