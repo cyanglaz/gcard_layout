@@ -23,7 +23,7 @@ script = ExtResource("1_u2yyo")
 layout_mode = 0
 offset_left = -78.2172
 offset_top = 6.15582
-offset_right = 1.77978
+offset_right = 1.77975
 offset_bottom = 118.156
 rotation = -0.15708
 
@@ -31,7 +31,7 @@ rotation = -0.15708
 layout_mode = 0
 offset_left = -39.2295
 offset_top = 1.54132
-offset_right = 40.7765
+offset_right = 40.7764
 offset_bottom = 113.541
 rotation = -0.0785398
 

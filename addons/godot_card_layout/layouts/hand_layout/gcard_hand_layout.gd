@@ -47,7 +47,9 @@ signal card_dragging_finished(card:Control, index:int)
 @export var hover_relative_position := Vector2(0, -20): set = _set_hover_relative_position
 
 @export_group("dragging")
-## Enable dragging and drop the cards.(Beta)[br]
+## Enable dragging and drop the cards.(Beta)[br][br]
+##
+## [b]false[/b] by default.
 ## @experimental
 @export var enable_dragging := false: set = _set_enable_dragging
 ## The scale of the card is being dragged.[br][br]
@@ -82,7 +84,7 @@ func _ready():
 		_reset_positions_if_in_tree(false, false)
 
 func _process(delta):
-	if !enable_hover && !_dragging_card:
+	if Engine.is_editor_hint() || !enable_hover && !_dragging_card:
 		return
 	var old_hovered_index = hovered_index
 	if _dragging_card:
@@ -106,7 +108,7 @@ func _validate_property(property):
 		property.usage = PROPERTY_USAGE_NO_EDITOR
 	if property.name in ["dynamic_radius_factor"] && !dynamic_radius:
 		property.usage = PROPERTY_USAGE_NO_EDITOR
-	if property.name in ["hovered_index", "hover_padding", "hovered_scale"] && !enable_hover:
+	if property.name in ["hovered_index", "hover_padding", "hovered_scale", "hover_relative_position"] && !enable_hover:
 		property.usage = PROPERTY_USAGE_NO_EDITOR
 	if property.name in ["dragging_scale"] && !enable_dragging:
 		property.usage = PROPERTY_USAGE_NO_EDITOR
