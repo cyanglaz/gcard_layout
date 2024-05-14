@@ -1,4 +1,4 @@
-<img src="./resources/imgs/logo.svg" style="width:256px;height:256px"><br>
+<img src="./resources/imgs/logo.png" style="width:256px;height:256px"><br>
 
 # Godot Card Control
 
