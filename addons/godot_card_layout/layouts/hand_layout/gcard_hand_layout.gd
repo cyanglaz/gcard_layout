@@ -7,6 +7,8 @@
 class_name GCardHandLayout
 extends Control
 
+## Emits when cards layout animation finished
+signal layout_animation_finished()
 ## Emits when a card is hovered.
 signal card_hoverd(card:Control, index:int)
 ## Emits when all the cards are unhovered.
@@ -167,6 +169,8 @@ func _reset_positions(reculculate_curve:bool = false, animated:bool = true):
 			position_index += 1
 	if should_animate:
 		_reset_position_tween.play()
+		await _reset_position_tween.finished
+		layout_animation_finished.emit()
 
 func _setup_cards():
 	for child in get_children():
